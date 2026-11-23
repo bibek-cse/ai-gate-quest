@@ -52,6 +52,8 @@
     const x = Array(n).fill(0); for (let r = n - 1; r >= 0; r--) { let s = a[r][n]; for (let k = r + 1; k < n; k++) s -= a[r][k] * x[k]; x[r] = s / a[r][r]; } return x;
   }
 
+  window.ANIMKIT = { stage, mapper, axes, dot, txt, solve, R, C, reduce };
+
   /* 1. bias–variance with polynomial fits */
   A.biasvar = host => {
     const st = stage(host, { label: "Polynomial fits on resampled noisy data", h: 300 });

@@ -3,9 +3,8 @@
 window.SUBJECTS = [
   { id: "ml", name: "Machine Learning", glyph: "ŷ", color: "#b3261e", bank: "ml",
     note: "GATE DA syllabus: regression, classification, model selection, neural nets, clustering, PCA." },
-  { id: "math", name: "Maths for AI", glyph: "∑", color: "#2d6a35",
-    note: "Applied foundations, side by side with every other subject.",
-    plan: ["Vectors & matrices for data", "Eigenvalues, SVD & PCA maths", "Derivatives, gradients & the chain rule", "Optimisation: convexity, Lagrange, GD", "Probability & Bayes", "Distributions you meet in ML", "Statistics: estimation, MLE, MAP", "Hypothesis tests & confidence", "Information theory: entropy, KL, cross-entropy", "Discrete maths & counting"] },
+  { id: "math", name: "Maths for AI", glyph: "∑", color: "#2d6a35", bank: "math",
+    note: "Applied foundations: the linear algebra, calculus, probability, statistics and information theory that ML is built on." },
   { id: "dl", name: "Deep Learning", glyph: "∂", color: "#1c2a52",
     plan: ["Training deep nets: optimisers, init", "Regularisation & normalisation", "CNNs: convolution, pooling, receptive field", "Modern CNNs: ResNet, EfficientNet", "RNNs, LSTM & GRU", "Attention & the Transformer", "Autoencoders & VAEs", "GANs", "Diffusion models", "Self-supervised & contrastive learning"] },
   { id: "meta", name: "Meta Learning", glyph: "μ", color: "#6b4c9a",
