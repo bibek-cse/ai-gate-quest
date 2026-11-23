@@ -9,6 +9,15 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2a4fc4">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="GATE Quest">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -68,5 +77,22 @@
 <script src="js/engine.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<div id="installbar" hidden><img src="icons/icon-192.png" alt=""><div><b>Add GATE Quest to your home screen</b><span id="installmsg">Open it like an app, in one tap.</span></div><button id="installbtn">Install</button><button id="installx" aria-label="Close">×</button></div>
+<script>
+(function () {
+  if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+  const bar = document.getElementById("installbar"), btn = document.getElementById("installbtn"), msg = document.getElementById("installmsg");
+  const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  let dismissed = false; try { dismissed = localStorage.getItem("aigq.install") === "x"; } catch (e) {}
+  if (standalone || dismissed) return;
+  let deferred = null;
+  addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e; bar.hidden = false; });
+  btn.onclick = async () => { if (deferred) { deferred.prompt(); await deferred.userChoice; deferred = null; bar.hidden = true; } };
+  document.getElementById("installx").onclick = () => { bar.hidden = true; try { localStorage.setItem("aigq.install", "x"); } catch (e) {} };
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  if (ios) { msg.textContent = "Tap the Share button, then 'Add to Home Screen'."; btn.hidden = true; setTimeout(() => bar.hidden = false, 2500); }
+  addEventListener("appinstalled", () => { bar.hidden = true; });
+})();
+</script>
 </body>
 </html>

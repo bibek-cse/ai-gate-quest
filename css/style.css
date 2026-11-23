@@ -191,3 +191,14 @@ figure.demo figcaption{font-size:13.5px;color:var(--muted);margin-top:8px;paddin
 code.k { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: .92em; background: #f1efe9; border-radius: 5px; padding: 1px 5px; }
 pre.qcode { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 13.5px; line-height: 1.5; background: #1d2230; color: #e9ecf5; border-radius: 10px; padding: 12px 14px; margin: 10px 0 4px; overflow-x: auto; white-space: pre; font-weight: 500; }
 .opt code.k, .qtext code.k { background: #eef0f6; }
+
+/* install-to-home-screen bar */
+#installbar{position:fixed;left:12px;right:12px;bottom:14px;z-index:50;display:flex;align-items:center;gap:12px;max-width:520px;margin:0 auto;background:#fff;border:1px solid #e3dfd5;border-radius:16px;padding:10px 10px 10px 12px;box-shadow:0 10px 30px rgba(20,24,40,.16)}
+#installbar[hidden]{display:none}
+#installbar img{width:44px;height:44px;border-radius:11px;flex:none}
+#installbar div{flex:1;min-width:0;font-size:13.5px;line-height:1.35}
+#installbar b{display:block;font-size:14px}
+#installbar span{color:#6b7080}
+#installbtn{background:#1d2230;color:#fff;border:0;border-radius:10px;padding:10px 14px;font-weight:700;font-size:14px;cursor:pointer}
+#installbtn[hidden]{display:none}
+#installx{background:none;border:0;font-size:22px;color:#8a8fa0;padding:4px 8px;cursor:pointer}
