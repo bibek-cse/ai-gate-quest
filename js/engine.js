@@ -29,7 +29,7 @@
 
   // ---------- helpers
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const fmt = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\n/g, "<br>");
+  const fmt = s => esc(s).split("```").map((p, i) => i % 2 ? `<pre class="qcode">${p.replace(/^\n/, "").replace(/\n$/, "")}</pre>` : p.replace(/`([^`\n]+)`/g, '<code class="k">$1</code>').replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\n/g, "<br>")).join("");
   const subj = id => SUBJECTS.find(s => s.id === id);
   const chapters = sid => (window.QBANK && QBANK[subj(sid).bank]) || [];
   const starKey = (sid, ch, l) => `${sid}/${ch}/${l}`, starsOf = (sid, ch, l) => S.stars[starKey(sid, ch, l)] || 0;
@@ -147,7 +147,7 @@
     const body = q.opts ? `<div class="opts">${q.opts.map((o, i) => `<button class="opt" data-i="${i}"><span class="L">${"ABCD"[i]}</span><span>${fmt(o)}</span><span class="mk"></span></button>`).join("")}</div>`
       : `<div class="nat"><input id="nat" inputmode="decimal" autocomplete="off" placeholder="your answer" aria-label="Numerical answer"><button class="btn" id="chk">Check</button></div><p class="answerline">Numerical answer type: enter a number.</p>`;
     view(`${qbar()}<main class="wrap"><div class="card slide"><p class="eyebrow">${esc(R.ch.title)}${R.mode === "drill" ? " · endless drill" : ` · ${LEVELS[R.lvl]} round`}</p>
-      <div style="margin-top:8px">${tagOf(q)}</div><p class="qtext">${fmt(q.q)}</p>${body}<div id="after"></div></div></main>`);
+      <div style="margin-top:8px">${tagOf(q)}</div><div class="qtext">${fmt(q.q)}</div>${body}<div id="after"></div></div></main>`);
     bindQuit();
     if (q.opts) app.querySelectorAll(".opt").forEach(b => b.onclick = () => answer(+b.dataset.i));
     else { const inp = document.getElementById("nat"), go = () => { if (inp.value.trim() === "" || isNaN(parseFloat(inp.value))) { toast("Type a number first"); return; } answer(parseFloat(inp.value)); };
@@ -169,7 +169,7 @@
     <div class="sec"><p class="k how">HOW</p><p class="v how">${fmt(q.how)}</p></div>${q.trap ? `<div class="sec"><p class="k trap">TRAP</p><p class="v">${fmt(q.trap)}</p></div>` : ""}`; }
   function concept() {
     const q = R.list[R.i], last = R.mode === "round" && R.i === R.list.length - 1;
-    view(`${qbar()}<main class="wrap"><div class="card slide concept"><p class="eyebrow">Concept</p><h2 style="margin-top:4px">Why this is the answer</h2><p class="qrecap">${fmt(q.q)}</p>${conceptHTML(q)}
+    view(`${qbar()}<main class="wrap"><div class="card slide concept"><p class="eyebrow">Concept</p><h2 style="margin-top:4px">Why this is the answer</h2><div class="qrecap">${fmt(q.q)}</div>${conceptHTML(q)}
       <div class="row" style="margin-top:14px">${R.mode === "drill" ? '<button class="btn ghost" id="fin">Finish drill</button>' : ""}<button class="btn" id="nx" style="flex:1">${last ? "See my stars →" : "Next question →"}</button></div></div></main>`);
     bindQuit(); document.getElementById("nx").onclick = next; document.getElementById("nx").focus({ preventScroll: true });
     const f = document.getElementById("fin"); if (f) f.onclick = results;
@@ -186,7 +186,7 @@
       <p class="big">${R.right} / ${n}</p><p class="muted">+${R.xp} XP${msg ? ` · <b style="color:var(--ok)">${msg}</b>` : ""}</p>
       ${!stars && R.mode === "round" ? `<p class="muted" style="margin-top:8px">You need 50 % for a star. Revise the theory, then retry: the questions are reshuffled and the numbers change.</p>` : ""}
       <div class="row" style="justify-content:center;margin-top:16px">${nextBtn}<button class="btn" id="again">${R.mode === "drill" ? "Drill again" : "Retry"}</button><button class="btn ghost" id="map">Chapter</button></div></div>
-      ${R.wrong.length ? `<div class="sheet"><h3>Revise these</h3><div class="review">${R.wrong.map((q, i) => `<button data-w="${i}">${fmt(q.q.length > 120 ? q.q.slice(0, 117) + "…" : q.q)}</button>`).join("")}</div></div>` : ""}</main>`);
+      ${R.wrong.length ? `<div class="sheet"><h3>Revise these</h3><div class="review">${R.wrong.map((q, i) => `<button data-w="${i}">${(t => fmt(t.length > 120 ? t.slice(0, 117) + "…" : t))((p => p.length > 1 ? p[0].trim() + " " + p[1].trim().split("\n").slice(0, 2).join(" · ") : p[0])(q.q.split("```")))}</button>`).join("")}</div></div>` : ""}</main>`);
     setTimeout(() => app.querySelectorAll(".stars span").forEach((s, i) => setTimeout(() => { if (s.dataset.on === "1") s.classList.add("on"); }, i * 220)), 120);
     document.getElementById("map").onclick = () => chapter(R.sid, R.ch.id, "practice");
     document.getElementById("again").onclick = () => R.mode === "drill" ? startDrill(R.sid, R.ch.id) : startRound(R.sid, R.ch.id, R.lvl);
@@ -194,7 +194,7 @@
     app.querySelectorAll("[data-w]").forEach(b => b.onclick = () => reviewOne(R.wrong[+b.dataset.w]));
   }
   function reviewOne(q) { const correct = q.opts ? q.opts[q.ans] : String(Math.round(q.ans * 1000) / 1000);
-    view(`${appbar(`<button class="iconbtn" id="bk" aria-label="Back to results">←</button>${brand}`)}<main class="wrap"><div class="card slide concept"><div>${tagOf(q)}</div><p class="qtext">${fmt(q.q)}</p><p class="answerline">Answer: <b>${fmt(correct)}</b></p>${conceptHTML(q)}</div></main>`);
+    view(`${appbar(`<button class="iconbtn" id="bk" aria-label="Back to results">←</button>${brand}`)}<main class="wrap"><div class="card slide concept"><div>${tagOf(q)}</div><div class="qtext">${fmt(q.q)}</div><p class="answerline">Answer: <b>${fmt(correct)}</b></p>${conceptHTML(q)}</div></main>`);
     document.getElementById("bk").onclick = results; }
 
   // keyboard: 1–4 choose an option; Enter / → continue
