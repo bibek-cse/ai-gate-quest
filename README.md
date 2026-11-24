@@ -5,6 +5,8 @@ Learn AI and GATE DA chapter by chapter. Each chapter opens with a **theory less
 and you need at least 1★ in one level to unlock the next. Each chapter also has an **endless drill** of
 freshly generated numerical questions with worked solutions.
 
+<img width="400" height="400" alt="ai-gate-quest-qr-only" src="https://github.com/user-attachments/assets/70e6914a-c5b8-4686-af5c-e1c3c1546dcb" />
+
 Live at: https://bibek-cse.github.io/ai-gate-quest/
 
 ## What's inside
