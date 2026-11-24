@@ -106,11 +106,11 @@
           ${s.anim ? `<figure class="demo"><div class="anim-host" data-anim="${s.anim}"></div>${s.cap ? `<figcaption>${esc(s.cap)}</figcaption>` : ""}</figure>` : ""}</section>`).join("")}
         <div class="cta reveal" id="endtheory"><h2>Theory done. Time to test it.</h2><p>Start with Basic. Each correct answer is followed by a short What / Why / How card.</p><button class="btn" id="go">Start the Basic quiz →</button></div>`;
     } else {
-      const lv = [1, 2, 3].map(l => { const open = l === 1 || starsOf(sid, cid, l - 1) > 0;
+      const lv = [1, 2, 3].map(l => { const open = true;
         return `<button class="lvl l${l} ${open ? "" : "locked"}" data-l="${l}"><span class="badge">${l === 3 ? "G" : LEVELS[l][0]}</span><span><span class="t">${LEVELS[l]}${l === 3 ? " level" : ""}</span><span class="d" style="display:block">${open ? LDESC[l] : `Locked: earn 1★ in ${LEVELS[l - 1]}`}</span></span><span class="s">${starStr(starsOf(sid, cid, l))}</span></button>`; }).join("");
       body = `${th && !S.read[`${sid}/${cid}`] ? `<div class="callout">Tip: read the theory first. Every quiz question is covered there.</div>` : ""}
         <div class="levels">${lv}<button class="lvl drill" data-d="1"><span class="badge">∞</span><span><span class="t">Endless drill</span><span class="d" style="display:block">Fresh numerical questions with worked solutions, as many as you like</span></span><span></span></button></div>
-        <p class="muted" style="font-size:13.5px;margin-top:12px">${ROUND} questions per round · 1★ at 50 %, 2★ at 70 %, 3★ at 90 % · each level unlocks the next</p>
+        <p class="muted" style="font-size:13.5px;margin-top:12px">${ROUND} questions per round · 1★ at 50 %, 2★ at 70 %, 3★ at 90 % · all levels are open: start anywhere</p>
         ${ch.lesson ? `<p style="margin-top:10px"><a href="${ch.lesson}">Bonus: the gradient-descent notebook lesson →</a></p>` : ""}`;
     }
     view(head + body + `</main>`);
@@ -178,8 +178,8 @@
   function results() {
     const n = R.mode === "drill" ? R.i + (R.answered ? 1 : 0) : R.list.length, frac = n ? R.right / n : 0; let stars = 0, msg = "";
     if (R.mode === "round") { stars = frac >= .9 ? 3 : frac >= .7 ? 2 : frac >= .5 ? 1 : 0; const k = starKey(R.sid, R.ch.id, R.lvl), before = S.stars[k] || 0;
-      if (stars > before) { S.stars[k] = stars; save(); } if (stars && R.lvl < 3 && !before) msg = `${LEVELS[R.lvl + 1]} unlocked`; if (stars) sfx.star(); }
-    const nextBtn = R.mode === "round" && stars && R.lvl < 3 ? `<button class="btn accent" id="nl">Play ${LEVELS[R.lvl + 1]} →</button>` : "";
+      if (stars > before) { S.stars[k] = stars; save(); } if (stars) sfx.star(); }
+    const nextBtn = R.mode === "round" && R.lvl < 3 ? `<button class="btn accent" id="nl">Play ${LEVELS[R.lvl + 1]} →</button>` : "";
     view(`${appbar(brand)}<main class="wrap"><div class="card slide" style="text-align:center"><p class="eyebrow">${esc(R.ch.title)} · ${R.mode === "drill" ? "Endless drill" : LEVELS[R.lvl] + " level"}</p>
       <h2 style="margin-top:6px">${R.mode === "drill" ? "Drill finished" : stars === 3 ? "Perfect round!" : stars ? "Level cleared" : "Not cleared yet"}</h2>
       ${R.mode === "round" ? `<div class="stars">${[1, 2, 3].map(i => `<span data-on="${i <= stars ? 1 : 0}">★</span>`).join("")}</div>` : ""}

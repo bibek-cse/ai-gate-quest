@@ -1,5 +1,5 @@
 /* Service worker: network-first, so updates you upload show up at once; falls back to the cache when offline. */
-const CACHE = "aigq-v1";
+const CACHE = "aigq-v2";
 self.addEventListener("install", e => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(c => c.addAll(["./", "./index.html", "./css/style.css", "./manifest.webmanifest", "./icons/icon-192.png"]))); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener("fetch", e => {
